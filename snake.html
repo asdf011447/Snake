@@ -7,29 +7,31 @@
 			#gameView{
 				width: 500px;
 				height: 500px;
-				border: 1px solid black;
+				border: 0px solid black;
 				background-color: gainsboro;
 			}
 			.head{
-				background-color: darkred;
+				background-color: #FFCC99;
 			}
 			.body{
-				background-color: indianred;
+				background-color: #FFFFCC;
 			}
 			.empty{
-				background-color: gainsboro;
+				background-color: #f2f2f2;
 			}
 			.apple{
-				background-color: gold;
+				background-color: #FFFF99;
 			}
 		</style>
-		<script type="text/javascript" src="js/jquery-3.1.1.js" ></script>
 		<script>
 			//常量：
 			var MAP_SIZE_H = 15;//地图行数
 			var MAP_SIZE_L = 15;//地图列数
 			var timeWait = 500;
 			var THROUGH_WALLS = true;//是否可以穿越边界
+			var GAME_STATUS_PAUSE = 1;
+			var GAME_STATUS_PORCESSING = 2;
+			
 			//地图状态代号
 			var apple = 3;
 			var head = 2;
@@ -255,11 +257,19 @@
 					}
 				}
 			}
+			var gameStatus = GAME_STATUS_PAUSE
 			function start(){
-				timeCounter =  setInterval("refresh()",timeWait);
+				if(gameStatus != GAME_STATUS_PORCESSING){
+					timeCounter =  setInterval("refresh()",timeWait);
+					gameStatus = GAME_STATUS_PORCESSING
+				}
+				
 			}
 			function pause(){
-				clearInterval(timeCounter);
+				if(gameStatus != GAME_STATUS_PAUSE){
+					clearInterval(timeCounter);
+					gameStatus = GAME_STATUS_PAUSE
+				}
 			}
 			function gameOver(){
 				pause();
@@ -283,20 +293,10 @@
 			//页面加载完成之后进行初始化
 			window.onload = init;
 			//速度选择设置
-			$(function speedChoise(){
-				$("#speed1").click(function(){
-					timeWait = 500;
-					pause();
-				});
-				$("#speed2").click(function(){
-					timeWait = 200;
-					pause();
-				});
-				$("#speed3").click(function(){
-					timeWait = 50;
-					pause();
-				});
-			});
+			function speedChoise(t){
+				timeWait = t;
+				pause();
+			}
 		</script>
 	</head>
 		<body id="bodyid">
@@ -309,14 +309,14 @@
 					</td>
 				</tr>
 			</table>
-			<table id="gameView" border="1" cellspacing="0" cellpadding="0" align="center"></table>
+			<table id="gameView" border="0" cellspacing="0" cellpadding="0" align="center"></table>
 			<table border="0" cellspacing="0" cellpadding="0" 
 				align="center" width="500px">
 				<tr>
 					<td align="center">
-						难度选择：<input type="button" value="入门" id="speed1"/>
-						<input type="button" value="普通" id="speed2" />
-						<input type="button" value="秋名山车神" id="speed3"/>
+						难度选择：<input type="button" value="入门" id="speed1" onclick="speedChoise(500)"/>
+						<input type="button" value="普通" id="speed2" onclick="speedChoise(200)"/>
+						<input type="button" value="秋名山车神" id="speed3" onclick="speedChoise(50)"/>
 					</td>
 				</tr>
 			</table>
